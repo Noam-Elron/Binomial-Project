@@ -40,7 +40,10 @@ public class BinomialHeap
 	 */
 	public HeapItem findMin()
 	{
-		return null; // should be replaced by student code
+		if (this.min != null) {
+			return this.min.item;
+		}
+		return null;
 	} 
 
 	/**
@@ -82,7 +85,7 @@ public class BinomialHeap
 	 */
 	public int size()
 	{
-		return 42; // should be replaced by student code
+		return this.size;
 	}
 
 	/**
@@ -93,7 +96,7 @@ public class BinomialHeap
 	 */
 	public boolean empty()
 	{
-		return false; // should be replaced by student code
+		return this.size == 0;
 	}
 
 	/**
@@ -110,6 +113,38 @@ public class BinomialHeap
 	 * Class implementing a node in a Binomial Heap.
 	 *  
 	 */
+
+
+	/**
+	 *
+	 * pre: x,y are Binomial tree header nodes
+	 * pre: Trees with x,y as header are same degree( B_k and B_k )
+	 *
+	 * Static meld between two trees of same size
+	 *
+	 */
+	public HeapNode link(HeapNode x, HeapNode y) {
+		if (x.item.key > y.item.key) {
+			HeapNode temp = x;
+			x = y;
+			y = temp;
+		}
+        y.next = tail_node(x.child); // y points to x's smallest degree child (B_0)
+		x.child.next = y; // x's original child points to y as y is inherently of bigger degree
+		x.child = y; // y is x's new biggest degree child
+		y.parent = x; // y's new parent(previously was null) is now x
+
+		return x;
+	}
+
+	public HeapNode tail_node(HeapNode head) {
+		HeapNode temp = head.next;
+		while (temp.next != head) {
+			temp = temp.next;
+		}
+		return temp;
+	}
+
 	public static class HeapNode{
 		public HeapItem item;
 		public HeapNode child;
