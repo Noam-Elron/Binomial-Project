@@ -4,11 +4,23 @@
  * An implementation of binomial heap over positive integers.
  *
  */
+public static void main(String[]args){
+	BinomialHeap heap = new Binomi3alHeap();
+	heap.insert(1, "geut");
+}
+
+
 public class BinomialHeap
 {
 	public int size;
 	public HeapNode last;
 	public HeapNode min;
+
+	public BinomialHeap(){
+		this.size = 0;
+		this.last = null;
+		this.min = null;
+	}
 
 	/**
 	 * 
@@ -18,8 +30,13 @@ public class BinomialHeap
 	 *
 	 */
 	public HeapItem insert(int key, String info) 
-	{    
-		return; // should be replaced by student code
+	{
+		HeapItem hi = new HeapItem(null, key, info);
+		HeapNode hn = new HeapNode(hi, null, hn, null, 0);
+		hi.node = hn;
+		BinomialHeap B0 = new BinomialHeap(1, hn, hn);
+
+		this.meld(B0);
 	}
 
 	/**
@@ -75,7 +92,54 @@ public class BinomialHeap
 	 */
 	public void meld(BinomialHeap heap2)
 	{
-		return; // should be replaced by student code   		
+		HeapNode p1 = this.last;
+		p1 = p1.next;
+		HeapNode p2 = heap2.last;
+		p2 = p2.next;
+
+		while(p1 != this.last && p2 != heap2.last){
+			if (p1.rank == p2.rank) { // link two nodes of the same rank
+				HeapNode temp = p1.next;
+				p1 = this.link(p1, p2);
+				p1.next = temp;
+				p2 = p2.next;
+			}
+			else{
+				if(p1.rank < p2.rank){ // advance in p1 (this.heap), no need to add items from p2 yet
+					p1 = p1.next;
+				}
+				else{ // p1.rank > p2.rank, add item from p2 to p1
+					HeapNode temp = p1.next; // saving pointer to what's going to be the next node in the end of the day
+					p1.next = p2; // adding the current node in heap2 to this.heap - unfortunately with a "tail" of other nodes
+					p1 = p1.next;
+					p1.next = temp; // no more tail of unwanted nodes!
+				}
+			}
+		}
+
+		if (p1 == this.last && p2 == heap2.last){
+			if(p1.rank == p2.rank){ // link nodes
+				HeapNode temp = p1.next;
+				p1 = this.link(p1, p2);
+				p1.next = temp;
+				p1 = p1.next; // we would like it to be the new "last"
+			}
+			else{ // add node
+				HeapNode temp = p1.next; // saving pointer to what's going to be the next node in the end of the day
+				p1.next = p2; // adding the current node in heap2 to this.heap - unfortunately with a "tail" of other nodes
+				p1 = p1.next;
+				p1.next = temp; // no more tail of unwanted nodes!
+				p1 = p1.next; // we would like it to be the new "last"
+			}
+		}
+		else {
+			if (p1 == this.last && p2 != heap2.last) {
+				heap2.last.next = p1.next; // p2 will now arrive even to p1's first element
+				p1.next = p2;
+				p1 = heap2.last;
+			}
+		}
+		this.last = p1;
 	}
 
 	/**
@@ -124,11 +188,15 @@ public class BinomialHeap
 	 *
 	 */
 	public HeapNode link(HeapNode x, HeapNode y) {
+		// change the line we discussed and make it work on this node and other node (receive 1 parameter insead of two)
 		if (x.item.key > y.item.key) {
 			HeapNode temp = x;
 			x = y;
 			y = temp;
 		}
+		// I'm adding a line that changes the rank
+		x.rank = x.rank + y.rank;
+
         y.next = tail_node(x.child); // y points to x's smallest degree child (B_0)
 		x.child.next = y; // x's original child points to y as y is inherently of bigger degree
 		x.child = y; // y is x's new biggest degree child
@@ -151,6 +219,22 @@ public class BinomialHeap
 		public HeapNode next;
 		public HeapNode parent;
 		public int rank;
+
+		public HeapNode(){
+			this.item = null;
+			this.child = null;
+			this.next = null;
+			this.parent = null;
+			this.rank = 0;
+		}
+
+		public HeapNode(HeapNode item, HeapNode child, HeapNode next, HeapNode parent){
+			this.item = item;
+			this.child = child;
+			this.next = next;
+			this.parent = parent;
+			this.rank = 0;
+		}
 	}
 
 	/**
@@ -161,5 +245,17 @@ public class BinomialHeap
 		public HeapNode node;
 		public int key;
 		public String info;
+
+		public HeapItem(){
+			this.node = null;
+			this.key = -1;
+			this.info = "";
+		}
+
+		public HeapItem(HeapNode node, int key, String info){
+			this.node = node;
+			this.key = key;
+			this.info = info;
+		}
 	}
 }
