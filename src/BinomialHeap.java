@@ -5,21 +5,76 @@
  *
  */
 
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class BinomialHeap
 {
+
+	public class Print{
+		public static void print_r(BinomialHeap hi) {
+			int s;
+			if(hi.getLast().getRank() == 0){s = 1;}
+			else if(hi.getLast().getRank() == 1){s = 2;}
+			else if(hi.getLast().getRank() == 2){s = 3;}
+			else {
+				s = (int) Math.pow(2, hi.getLast().getRank() - 1);
+			}
+			int[][][] answer = new int[hi.numTrees()][s][s];
+			BinomialHeap.HeapNode curr_tree = hi.getLast().getNext();
+			for (int k = 0; k < hi.numTrees(); k++ ) {
+				Set<BinomialHeap.HeapNode> dic = new HashSet<>();
+				print_rec(curr_tree, 0, 0, dic, answer, k);
+				curr_tree = curr_tree.getNext();
+			}
+			int x = 0;
+			for (int i = 0; i < answer[x].length; i++) {
+				for (int j = 0; j < answer[x].length; j++) {
+					if(answer[x][i][j] != 0) {
+						System.out.print(answer[x][i][j] + " ");
+					}
+					else{System.out.print("--");}
+					if(x == answer.length-1 && j == answer[x].length-1) {break;}
+					if(j == answer[x].length-1) {
+						if (x + 1 < answer.length) {x += 1;}
+						j = -1;
+					}
+				}
+				System.out.println();
+				x = 0;
+			}
+		}
+		public static void print_rec(BinomialHeap.HeapNode first, int depth, int x, Set<BinomialHeap.HeapNode> dic, int[][][] answer, int num_in_row) {
+			if (dic.contains(first)){return;}
+			dic.add(first);
+			answer[num_in_row][depth][x] = first.getItem().getKey();
+			if(depth != 0) {
+				if(x == 2 && depth == 1) {print_rec(first.getNext(), depth, x + 2, dic, answer, num_in_row);}
+				else if (x == 4 && depth == 1) {print_rec(first.getNext(), depth, x + 4, dic, answer, num_in_row);}
+				else if (x == 10 && depth == 2) {print_rec(first.getNext(), depth, x + 2, dic, answer, num_in_row);}
+				else {
+					print_rec(first.getNext(), depth, x + 1, dic, answer, num_in_row);
+				}
+			}
+			if(first.getChild() != null){
+				print_rec(first.getChild().getNext(),depth+1,x,dic,answer, num_in_row);
+			}
+		}
+	}
+
+
 	public static void main(String[]args){
 		BinomialHeap heap = new BinomialHeap();
 		heap.insert(12, "geut");
-		heap.insert(8, "geut");
+		//heap.insert(8, "geut");
 		System.out.println("heap last: "+heap.last);
 		System.out.println("heap last next: "+heap.last.next);
-		heap.insert(5, "geut");
-		heap.insert(1, "geut");
+		//heap.insert(5, "geut");
+		//heap.insert(1, "geut");
 		//heap.insert(2, "geut");
 		//heap.insert(9, "geut");
-		heap.displayHeap();
+		Print.print_r(heap);
 		System.out.println("heap.last.next: "+heap.last.next);
 		System.out.println("heap.last: "+heap.last);
 		System.out.println("heap.last.child: "+heap.last.child);
@@ -42,6 +97,10 @@ public class BinomialHeap
 		this.size = 1;
 		this.last = node;
 		this.min = node;
+	}
+
+	public HeapNode getLast(){
+		return this.last;
 	}
 /* doesnt work
 	public void displayHeap()
@@ -257,7 +316,14 @@ public class BinomialHeap
 	 */
 	public int numTrees()
 	{
-		return 0; // should be replaced by student code
+		int count = 1;
+		HeapNode p = this.last.next;
+		while (p!=this.last){
+			p = p.next;
+			count++;
+		}
+
+		return count;
 	}
 
 	/**
@@ -341,6 +407,19 @@ public class BinomialHeap
 
 			return "(HeapNode) <item: "+this.item+", child: "+child+", next: "+next+", parent: "+parent+", rank: "+this.rank+">";
 		}
+
+		public HeapItem getItem(){
+			return this.item;
+		}
+		public HeapNode getChild(){
+			return this.child;
+		}
+		public HeapNode getNext(){
+			return this.next;
+		}
+		public int getRank(){
+			return this.rank;
+		}
 /*
 		public boolean equals(HeapNode node){
 			String this_child="", this_next="", this_parent="";
@@ -393,6 +472,10 @@ public class BinomialHeap
 			this.node = node;
 			this.key = key;
 			this.info = info;
+		}
+
+		public int getKey(){
+			return this.key;
 		}
 
 		public String toString(){
