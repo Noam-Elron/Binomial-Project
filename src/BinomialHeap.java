@@ -4,23 +4,70 @@
  * An implementation of binomial heap over positive integers.
  *
  */
-public static void main(String[]args){
-	BinomialHeap heap = new Binomi3alHeap();
-	heap.insert(1, "geut");
-}
+
 
 
 public class BinomialHeap
 {
+	public static void main(String[]args){
+		BinomialHeap heap = new BinomialHeap();
+		heap.insert(12, "geut");
+		heap.insert(8, "geut");
+		System.out.println("heap last: "+heap.last);
+		System.out.println("heap last next: "+heap.last.next);
+		heap.insert(5, "geut");
+		heap.insert(1, "geut");
+		//heap.insert(2, "geut");
+		//heap.insert(9, "geut");
+		heap.displayHeap();
+		System.out.println("heap.last.next: "+heap.last.next);
+		System.out.println("heap.last: "+heap.last);
+		System.out.println("heap.last.child: "+heap.last.child);
+		System.out.println("heap.last.child.child: "+heap.last.child.child);
+		System.out.println("heap.last.child.next: "+heap.last.child.next);
+	}
+
 	public int size;
 	public HeapNode last;
 	public HeapNode min;
 
 	public BinomialHeap(){
 		this.size = 0;
-		this.last = null;
-		this.min = null;
+		this.last = new HeapNode();
+		this.last.next = this.last;
+		this.min = new HeapNode();
 	}
+
+	public BinomialHeap(HeapNode node){
+		this.size = 1;
+		this.last = node;
+		this.min = node;
+	}
+/* doesnt work
+	public void displayHeap()
+	{
+		System.out.print("\nHeap : ");
+		displayHeapRec(this.last.next, this.last.next, false);
+		System.out.println("\n");
+	}
+
+	private void displayHeapRec(HeapNode r, HeapNode firstInRow, boolean wasFirst){
+		if (r!=null) {
+			if (!r.equals(firstInRow) || !wasFirst) {
+				System.out.println("r: "+r);
+				System.out.println("firstInRow: "+firstInRow);
+				if (r == firstInRow) {
+					wasFirst = true;
+				}
+				displayHeapRec(r.child, r.child, false);
+				System.out.print(r.item + " ");
+				if(r.rank!=-1) {
+					displayHeapRec(r.next, r, wasFirst);
+				}
+			}
+		}
+	}
+ */
 
 	/**
 	 * 
@@ -31,12 +78,16 @@ public class BinomialHeap
 	 */
 	public HeapItem insert(int key, String info) 
 	{
-		HeapItem hi = new HeapItem(null, key, info);
-		HeapNode hn = new HeapNode(hi, null, hn, null, 0);
+		HeapItem hi = new HeapItem(new HeapNode(), key, info);
+		HeapNode hn = new HeapNode(hi, new HeapNode(), new HeapNode(), new HeapNode());
+		hn.next = hn;
 		hi.node = hn;
-		BinomialHeap B0 = new BinomialHeap(1, hn, hn);
+		BinomialHeap B0 = new BinomialHeap(hn);
+
 
 		this.meld(B0);
+
+		return hi;
 	}
 
 	/**
@@ -92,6 +143,7 @@ public class BinomialHeap
 	 */
 	public void meld(BinomialHeap heap2)
 	{
+		System.out.println("melding");
 		HeapNode p1 = this.last;
 		p1 = p1.next;
 		HeapNode p2 = heap2.last;
@@ -119,13 +171,30 @@ public class BinomialHeap
 
 		if (p1 == this.last && p2 == heap2.last){
 			if(p1.rank == p2.rank){ // link nodes
+				System.out.println("1");
 				HeapNode temp = p1.next;
 				p1 = this.link(p1, p2);
-				p1.next = temp;
+				System.out.println("p1 after link: "+p1);
+				if(temp.rank != -1) {
+					System.out.println("temp is nullish");
+					p1.next = p1;
+				}
+				else{
+					p1.next = p1;
+				}
 				p1 = p1.next; // we would like it to be the new "last"
 			}
 			else{ // add node
-				HeapNode temp = p1.next; // saving pointer to what's going to be the next node in the end of the day
+				System.out.println("2");
+				HeapNode temp = heap2.last;
+				if (this.last.rank!=-1) {
+					System.out.println("3");
+					temp = p1.next; // saving pointer to what's going to be the next node in the end of the day
+				}
+				else{
+					System.out.println("4");
+					temp.rank = 0;
+				}
 				p1.next = p2; // adding the current node in heap2 to this.heap - unfortunately with a "tail" of other nodes
 				p1 = p1.next;
 				p1.next = temp; // no more tail of unwanted nodes!
@@ -133,10 +202,28 @@ public class BinomialHeap
 			}
 		}
 		else {
+			System.out.println("5");
+			System.out.println("p1 shone milast?: "+p1);
 			if (p1 == this.last && p2 != heap2.last) {
+				System.out.println("6");
 				heap2.last.next = p1.next; // p2 will now arrive even to p1's first element
 				p1.next = p2;
 				p1 = heap2.last;
+			}
+			else{
+				System.out.println("7");
+				if (p1.rank == p2.rank) { // link two nodes of the same rank
+					HeapNode temp = p1.next;
+					p1 = this.link(p1, p2);
+					p1.next = temp;
+					p2 = p2.next;
+					System.out.println("p1 in the if: "+p1);
+					System.out.println("p2 in the if: "+p2);
+				}
+				if (p1.rank == p1.next.rank){
+					p1 = this.link(p1, p1.next);
+					p1.next = p1;
+				}
 			}
 		}
 		this.last = p1;
@@ -195,9 +282,10 @@ public class BinomialHeap
 			y = temp;
 		}
 		// I'm adding a line that changes the rank
-		x.rank = x.rank + y.rank;
+		x.rank = x.rank + y.rank +1 ;
 
-        y.next = tail_node(x.child); // y points to x's smallest degree child (B_0)
+        //y.next = tail_node(x.child); // y points to x's smallest degree child (B_0)
+		y.next = x.child;
 		x.child.next = y; // x's original child points to y as y is inherently of bigger degree
 		x.child = y; // y is x's new biggest degree child
 		y.parent = x; // y's new parent(previously was null) is now x
@@ -221,19 +309,68 @@ public class BinomialHeap
 		public int rank;
 
 		public HeapNode(){
-			this.item = null;
+			this.item = new HeapItem();
 			this.child = null;
 			this.next = null;
 			this.parent = null;
-			this.rank = 0;
+			this.rank = -1;
 		}
 
-		public HeapNode(HeapNode item, HeapNode child, HeapNode next, HeapNode parent){
+		public HeapNode(HeapItem item, HeapNode child, HeapNode next, HeapNode parent){
 			this.item = item;
 			this.child = child;
 			this.next = next;
 			this.parent = parent;
 			this.rank = 0;
+		}
+
+		public String toString(){
+			String child = "null";
+			String next = "null";
+			String parent = "null";
+
+			if(this.child != null){
+				child = this.child.item.toString2();
+			}
+			if(this.next != null){
+				next = this.next.item.toString2();
+			}
+			if(this.parent != null){
+				parent = this.parent.item.toString2();
+			}
+
+			return "(HeapNode) <item: "+this.item+", child: "+child+", next: "+next+", parent: "+parent+", rank: "+this.rank+">";
+		}
+/*
+		public boolean equals(HeapNode node){
+			String this_child="", this_next="", this_parent="";
+			String node_child="", node_next="", node_parent="";
+
+			if (this.child == null){
+				this_child = "null";
+			}
+			if (this.next == null){
+				this_next = "null";
+			}
+			if (this.parent== null){
+				this_parent = "null";
+			}
+
+			if (node.child == null){
+				node_child = "null";
+			}
+			if (node.next == null){
+				node_next = "null";
+			}
+			if (node.parent== null){
+				node_parent = "null";
+			}
+
+			return this.item.equals(node.item) && this_child.equals(node_child) && this_next.equals(node_next) && this_parent.equals(node_parent) && this.rank == node.rank;
+		}
+*/
+ 		public boolean equals(HeapNode node){
+			 return this.toString().equals(node.toString());
 		}
 	}
 
@@ -249,13 +386,25 @@ public class BinomialHeap
 		public HeapItem(){
 			this.node = null;
 			this.key = -1;
-			this.info = "";
+			this.info = "empty value";
 		}
 
 		public HeapItem(HeapNode node, int key, String info){
 			this.node = node;
 			this.key = key;
 			this.info = info;
+		}
+
+		public String toString(){
+			return "(HeapItem) <"+this.key+", "+this.info+">";
+		}
+
+		public String toString2(){
+			return "(HeapNode's values) <"+this.key+", "+this.info+">";
+		}
+
+		public boolean equals(HeapItem item){
+			return this.node == item.node && this.key == item.key && this.info == item.info;
 		}
 	}
 }
