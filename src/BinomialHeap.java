@@ -53,7 +53,10 @@ public class BinomialHeap
 		}
 
 		BinomialHeap B0 = new BinomialHeap(b_0_heapnode);
+
+
 		this.meld(B0);
+
 		return b_0_heapitem;
 	}
 
@@ -64,7 +67,7 @@ public class BinomialHeap
 	 */
 	public void deleteMin()
 	{
-		return; // implement Binomial tree constructor from linked list of nodes.
+		return; // should be replaced by student code
 
 	}
 
@@ -294,7 +297,7 @@ public class BinomialHeap
 		public HeapNode(HeapItem item){
 			this.item = item;
 			this.child = null;
-			this.next = this; // List is circular thus if no other node needs to point to self
+			this.next = null;
 			this.parent = null;
 			this.rank = 0;
 		}
@@ -337,7 +340,34 @@ public class BinomialHeap
 		public int getRank(){
 			return this.rank;
 		}
+		/*
+                public boolean equals(HeapNode node){
+                    String this_child="", this_next="", this_parent="";
+                    String node_child="", node_next="", node_parent="";
 
+                    if (this.child == null){
+                        this_child = "null";
+                    }
+                    if (this.next == null){
+                        this_next = "null";
+                    }
+                    if (this.parent== null){
+                        this_parent = "null";
+                    }
+
+                    if (node.child == null){
+                        node_child = "null";
+                    }
+                    if (node.next == null){
+                        node_next = "null";
+                    }
+                    if (node.parent== null){
+                        node_parent = "null";
+                    }
+
+                    return this.item.equals(node.item) && this_child.equals(node_child) && this_next.equals(node_next) && this_parent.equals(node_parent) && this.rank == node.rank;
+                }
+        */
 		public boolean equals(HeapNode node){
 			return this.toString().equals(node.toString());
 		}
