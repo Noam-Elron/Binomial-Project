@@ -4,83 +4,8 @@
  * An implementation of binomial heap over positive integers.
  *
  */
-
-import java.util.HashSet;
-import java.util.Set;
-
-
 public class BinomialHeap
 {
-
-	public class Print{
-		public static void print_r(BinomialHeap hi) {
-			int s;
-			if(hi.getLast().getRank() == 0){s = 1;}
-			else if(hi.getLast().getRank() == 1){s = 2;}
-			else if(hi.getLast().getRank() == 2){s = 3;}
-			else {
-				s = (int) Math.pow(2, hi.getLast().getRank() - 1);
-			}
-			int[][][] answer = new int[hi.numTrees()][s][s];
-			BinomialHeap.HeapNode curr_tree = hi.getLast().getNext();
-			for (int k = 0; k < hi.numTrees(); k++ ) {
-				Set<BinomialHeap.HeapNode> dic = new HashSet<>();
-				print_rec(curr_tree, 0, 0, dic, answer, k);
-				curr_tree = curr_tree.getNext();
-			}
-			int x = 0;
-			for (int i = 0; i < answer[x].length; i++) {
-				for (int j = 0; j < answer[x].length; j++) {
-					if(answer[x][i][j] != 0) {
-						System.out.print(answer[x][i][j] + " ");
-					}
-					else{System.out.print("--");}
-					if(x == answer.length-1 && j == answer[x].length-1) {break;}
-					if(j == answer[x].length-1) {
-						if (x + 1 < answer.length) {x += 1;}
-						j = -1;
-					}
-				}
-				System.out.println();
-				x = 0;
-			}
-		}
-		public static void print_rec(BinomialHeap.HeapNode first, int depth, int x, Set<BinomialHeap.HeapNode> dic, int[][][] answer, int num_in_row) {
-			if (dic.contains(first)){return;}
-			dic.add(first);
-			answer[num_in_row][depth][x] = first.getItem().getKey();
-			if(depth != 0) {
-				if(x == 2 && depth == 1) {print_rec(first.getNext(), depth, x + 2, dic, answer, num_in_row);}
-				else if (x == 4 && depth == 1) {print_rec(first.getNext(), depth, x + 4, dic, answer, num_in_row);}
-				else if (x == 10 && depth == 2) {print_rec(first.getNext(), depth, x + 2, dic, answer, num_in_row);}
-				else {
-					print_rec(first.getNext(), depth, x + 1, dic, answer, num_in_row);
-				}
-			}
-			if(first.getChild() != null){
-				print_rec(first.getChild().getNext(),depth+1,x,dic,answer, num_in_row);
-			}
-		}
-	}
-
-
-	public static void main(String[]args){
-		BinomialHeap heap = new BinomialHeap();
-		heap.insert(12, "geut");
-		//heap.insert(8, "geut");
-		System.out.println("heap last: "+heap.last);
-		System.out.println("heap last next: "+heap.last.next);
-		//heap.insert(5, "geut");
-		//heap.insert(1, "geut");
-		//heap.insert(2, "geut");
-		//heap.insert(9, "geut");
-		Print.print_r(heap);
-		System.out.println("heap.last.next: "+heap.last.next);
-		System.out.println("heap.last: "+heap.last);
-		System.out.println("heap.last.child: "+heap.last.child);
-		System.out.println("heap.last.child.child: "+heap.last.child.child);
-		System.out.println("heap.last.child.next: "+heap.last.child.next);
-	}
 
 	public int size;
 	public HeapNode last;
@@ -102,55 +27,31 @@ public class BinomialHeap
 	public HeapNode getLast(){
 		return this.last;
 	}
-/* doesnt work
-	public void displayHeap()
-	{
-		System.out.print("\nHeap : ");
-		displayHeapRec(this.last.next, this.last.next, false);
-		System.out.println("\n");
-	}
-
-	private void displayHeapRec(HeapNode r, HeapNode firstInRow, boolean wasFirst){
-		if (r!=null) {
-			if (!r.equals(firstInRow) || !wasFirst) {
-				System.out.println("r: "+r);
-				System.out.println("firstInRow: "+firstInRow);
-				if (r == firstInRow) {
-					wasFirst = true;
-				}
-				displayHeapRec(r.child, r.child, false);
-				System.out.print(r.item + " ");
-				if(r.rank!=-1) {
-					displayHeapRec(r.next, r, wasFirst);
-				}
-			}
-		}
-	}
- */
 
 	/**
-	 * 
+	 *
 	 * pre: key > 0
 	 *
 	 * Insert (key,info) into the heap and return the newly generated HeapItem.
 	 *
 	 */
-	public HeapItem insert(int key, String info) 
+
+	public HeapItem insert(int key, String info)
 	{
-		HeapItem hi = new HeapItem(new HeapNode(), key, info);
-		HeapNode hn = new HeapNode(hi, new HeapNode(), new HeapNode(), new HeapNode());
-		hn.next = hn;
-		hi.node = hn;
-		BinomialHeap B0 = new BinomialHeap(hn);
+		HeapItem b_0_heapitem = new HeapItem(key, info);
+		HeapNode b_0_heapnode = new HeapNode(b_0_heapitem);
+		b_0_heapitem.set_node(b_0_heapnode);
+
+		BinomialHeap B0 = new BinomialHeap(b_0_heapnode);
 
 
 		this.meld(B0);
 
-		return hi;
+		return b_0_heapitem;
 	}
 
 	/**
-	 * 
+	 *
 	 * Delete the minimal item
 	 *
 	 */
@@ -161,7 +62,7 @@ public class BinomialHeap
 	}
 
 	/**
-	 * 
+	 *
 	 * Return the minimal HeapItem, null if empty.
 	 *
 	 */
@@ -171,32 +72,32 @@ public class BinomialHeap
 			return this.min.item;
 		}
 		return null;
-	} 
+	}
 
 	/**
-	 * 
+	 *
 	 * pre: 0<diff<item.key
-	 * 
+	 *
 	 * Decrease the key of item by diff and fix the heap. 
-	 * 
+	 *
 	 */
-	public void decreaseKey(HeapItem item, int diff) 
-	{    
+	public void decreaseKey(HeapItem item, int diff)
+	{
 		return; // should be replaced by student code
 	}
 
 	/**
-	 * 
+	 *
 	 * Delete the item from the heap.
 	 *
 	 */
-	public void delete(HeapItem item) 
-	{    
+	public void delete(HeapItem item)
+	{
 		return; // should be replaced by student code
 	}
 
 	/**
-	 * 
+	 *
 	 * Meld the heap with heap2
 	 *
 	 */
@@ -289,9 +190,9 @@ public class BinomialHeap
 	}
 
 	/**
-	 * 
+	 *
 	 * Return the number of elements in the heap
-	 *   
+	 *
 	 */
 	public int size()
 	{
@@ -299,10 +200,10 @@ public class BinomialHeap
 	}
 
 	/**
-	 * 
+	 *
 	 * The method returns true if and only if the heap
 	 * is empty.
-	 *   
+	 *
 	 */
 	public boolean empty()
 	{
@@ -310,9 +211,9 @@ public class BinomialHeap
 	}
 
 	/**
-	 * 
+	 *
 	 * Return the number of trees in the heap.
-	 * 
+	 *
 	 */
 	public int numTrees()
 	{
@@ -328,7 +229,7 @@ public class BinomialHeap
 
 	/**
 	 * Class implementing a node in a Binomial Heap.
-	 *  
+	 *
 	 */
 
 
@@ -350,8 +251,8 @@ public class BinomialHeap
 		// I'm adding a line that changes the rank
 		x.rank = x.rank + y.rank +1 ;
 
-        //y.next = tail_node(x.child); // y points to x's smallest degree child (B_0)
-		y.next = x.child;
+		//y.next = tail_node(x.child); // y points to x's smallest degree child (B_0)
+		y.next = x.child.next;
 		x.child.next = y; // x's original child points to y as y is inherently of bigger degree
 		x.child = y; // y is x's new biggest degree child
 		y.parent = x; // y's new parent(previously was null) is now x
@@ -367,6 +268,11 @@ public class BinomialHeap
 		return temp;
 	}
 
+
+
+
+
+
 	public static class HeapNode{
 		public HeapItem item;
 		public HeapNode child;
@@ -374,12 +280,22 @@ public class BinomialHeap
 		public HeapNode parent;
 		public int rank;
 
+		// Empty/Virtual HeapNode
 		public HeapNode(){
 			this.item = new HeapItem();
 			this.child = null;
 			this.next = null;
 			this.parent = null;
 			this.rank = -1;
+		}
+
+		// B_0 HeapNode, used in insert to create a B_0 Heap so no parent, child or next.
+		public HeapNode(HeapItem item){
+			this.item = item;
+			this.child = null;
+			this.next = null;
+			this.parent = null;
+			this.rank = 0;
 		}
 
 		public HeapNode(HeapItem item, HeapNode child, HeapNode next, HeapNode parent){
@@ -420,42 +336,42 @@ public class BinomialHeap
 		public int getRank(){
 			return this.rank;
 		}
-/*
+		/*
+                public boolean equals(HeapNode node){
+                    String this_child="", this_next="", this_parent="";
+                    String node_child="", node_next="", node_parent="";
+
+                    if (this.child == null){
+                        this_child = "null";
+                    }
+                    if (this.next == null){
+                        this_next = "null";
+                    }
+                    if (this.parent== null){
+                        this_parent = "null";
+                    }
+
+                    if (node.child == null){
+                        node_child = "null";
+                    }
+                    if (node.next == null){
+                        node_next = "null";
+                    }
+                    if (node.parent== null){
+                        node_parent = "null";
+                    }
+
+                    return this.item.equals(node.item) && this_child.equals(node_child) && this_next.equals(node_next) && this_parent.equals(node_parent) && this.rank == node.rank;
+                }
+        */
 		public boolean equals(HeapNode node){
-			String this_child="", this_next="", this_parent="";
-			String node_child="", node_next="", node_parent="";
-
-			if (this.child == null){
-				this_child = "null";
-			}
-			if (this.next == null){
-				this_next = "null";
-			}
-			if (this.parent== null){
-				this_parent = "null";
-			}
-
-			if (node.child == null){
-				node_child = "null";
-			}
-			if (node.next == null){
-				node_next = "null";
-			}
-			if (node.parent== null){
-				node_parent = "null";
-			}
-
-			return this.item.equals(node.item) && this_child.equals(node_child) && this_next.equals(node_next) && this_parent.equals(node_parent) && this.rank == node.rank;
-		}
-*/
- 		public boolean equals(HeapNode node){
-			 return this.toString().equals(node.toString());
+			return this.toString().equals(node.toString());
 		}
 	}
 
 	/**
 	 * Class implementing an item in a Binomial Heap.
-	 *  
+	 *
 	 */
 	public static class HeapItem{
 		public HeapNode node;
@@ -468,10 +384,20 @@ public class BinomialHeap
 			this.info = "empty value";
 		}
 
+		public HeapItem(int key, String info){
+			this.node = null;
+			this.key = key;
+			this.info = info;
+		}
+
 		public HeapItem(HeapNode node, int key, String info){
 			this.node = node;
 			this.key = key;
 			this.info = info;
+		}
+
+		public void set_node(HeapNode node) {
+			this.node = node;
 		}
 
 		public int getKey(){
