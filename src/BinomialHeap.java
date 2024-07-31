@@ -108,23 +108,24 @@ public class BinomialHeap
 		p1 = p1.next;
 		HeapNode p2 = heap2.last;
 		p2 = p2.next;
+		HeapNode previous = p1;
 
 		while(p1 != this.last && p2 != heap2.last){
 			if (p1.rank == p2.rank) { // link two nodes of the same rank
-				HeapNode temp = p1.next;
+				HeapNode temp = p2.next;
 				p1 = this.link(p1, p2);
-				p1.next = temp;
-				p2 = p2.next;
+				p2 = temp;
 			}
 			else{
 				if(p1.rank < p2.rank){ // advance in p1 (this.heap), no need to add items from p2 yet
+					previous = p1;
 					p1 = p1.next;
 				}
 				else{ // p1.rank > p2.rank, add item from p2 to p1
-					HeapNode temp = p1.next; // saving pointer to what's going to be the next node in the end of the day
-					p1.next = p2; // adding the current node in heap2 to this.heap - unfortunately with a "tail" of other nodes
-					p1 = p1.next;
-					p1.next = temp; // no more tail of unwanted nodes!
+					HeapNode temp = p2.next; // saving pointer to what's going to be the next node in the end of the day
+					previous.next = p2;
+					p2.next = p1;
+					p2 = temp;
 				}
 			}
 		}
@@ -132,10 +133,10 @@ public class BinomialHeap
 		if (p1 == this.last && p2 == heap2.last){
 			if(p1.rank == p2.rank){ // link nodes
 				System.out.println("1");
-				HeapNode temp = p1.next;
+				//HeapNode temp = p1.next;
 				p1 = this.link(p1, p2);
 				System.out.println("p1 after link: "+p1);
-				if(temp.rank != -1) {
+				if(p1.next.rank != -1) {
 					System.out.println("temp is nullish");
 					p1.next = p1;
 				}
@@ -217,9 +218,16 @@ public class BinomialHeap
 	 */
 	public int numTrees()
 	{
+		if(this.last == null){
+			return 0;
+		}
 		int count = 1;
-		HeapNode p = this.last.next;
-		while (p!=this.last){
+		HeapNode p = this.last;
+		boolean wasLast = false;
+		while (p!=this.last || !wasLast){
+			if(p == this.last){
+				wasLast = true;
+			}
 			p = p.next;
 			count++;
 		}
