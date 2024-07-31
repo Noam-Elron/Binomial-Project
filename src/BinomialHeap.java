@@ -10,16 +10,18 @@ public class BinomialHeap
 	public int size;
 	public HeapNode last;
 	public HeapNode min;
+	public int num_trees;
 
 	public BinomialHeap(){
 		this.size = 0;
-		this.last = new HeapNode();
-		this.last.next = this.last;
-		this.min = new HeapNode();
+		this.num_trees = 0;
+		this.last = null;
+		this.min = null;
 	}
 
 	public BinomialHeap(HeapNode node){
 		this.size = 1;
+		this.num_trees = 1;
 		this.last = node;
 		this.min = node;
 	}
@@ -42,11 +44,16 @@ public class BinomialHeap
 		HeapNode b_0_heapnode = new HeapNode(b_0_heapitem);
 		b_0_heapitem.set_node(b_0_heapnode);
 
+
+		if (this.size == 0) {
+			this.min = b_0_heapnode;
+			this.last = b_0_heapnode;
+			this.size++;
+			this.num_trees++;
+		}
+
 		BinomialHeap B0 = new BinomialHeap(b_0_heapnode);
-
-
 		this.meld(B0);
-
 		return b_0_heapitem;
 	}
 
@@ -57,7 +64,7 @@ public class BinomialHeap
 	 */
 	public void deleteMin()
 	{
-		return; // should be replaced by student code
+		return; // implement Binomial tree constructor from linked list of nodes.
 
 	}
 
@@ -78,7 +85,7 @@ public class BinomialHeap
 	 *
 	 * pre: 0<diff<item.key
 	 *
-	 * Decrease the key of item by diff and fix the heap. 
+	 * Decrease the key of item by diff and fix the heap.
 	 *
 	 */
 	public void decreaseKey(HeapItem item, int diff)
@@ -108,34 +115,35 @@ public class BinomialHeap
 		p1 = p1.next;
 		HeapNode p2 = heap2.last;
 		p2 = p2.next;
+		HeapNode previous = p1;
 
+		System.out.println("p1: " + p1 + " p2: " + p2);
 		while(p1 != this.last && p2 != heap2.last){
 			if (p1.rank == p2.rank) { // link two nodes of the same rank
-				HeapNode temp = p1.next;
-				p1 = this.link(p1, p2);
-				p1.next = temp;
-				p2 = p2.next;
+				HeapNode temp = p2.next; // p2.next is overriden while linking so need to save next Binomial tree
+				p1 = this.link(p1, p2); // hang p2 as leftmost child of p1.
+				p2 = temp; // temp contains the next binomial tree in the second heap
 			}
-			else{
-				if(p1.rank < p2.rank){ // advance in p1 (this.heap), no need to add items from p2 yet
+			else if (p1.rank < p2.rank){ // advance in p1 (this.heap), no need to add items from p2 yet
+					previous = p1;
 					p1 = p1.next;
-				}
-				else{ // p1.rank > p2.rank, add item from p2 to p1
-					HeapNode temp = p1.next; // saving pointer to what's going to be the next node in the end of the day
-					p1.next = p2; // adding the current node in heap2 to this.heap - unfortunately with a "tail" of other nodes
-					p1 = p1.next;
-					p1.next = temp; // no more tail of unwanted nodes!
-				}
 			}
+			else{ // p1.rank > p2.rank, add p2 before p1
+				HeapNode temp = p2.next; // need to save p2.next as p2 now needs to points to p1.
+				previous.next = p2;
+				p2.next = p1;
+				p2 = temp;
+				this.num_trees += 1;
+			}
+
 		}
 
 		if (p1 == this.last && p2 == heap2.last){
 			if(p1.rank == p2.rank){ // link nodes
 				System.out.println("1");
-				HeapNode temp = p1.next;
 				p1 = this.link(p1, p2);
 				System.out.println("p1 after link: "+p1);
-				if(temp.rank != -1) {
+				if(p1.next.rank != -1) {
 					System.out.println("temp is nullish");
 					p1.next = p1;
 				}
@@ -217,14 +225,7 @@ public class BinomialHeap
 	 */
 	public int numTrees()
 	{
-		int count = 1;
-		HeapNode p = this.last.next;
-		while (p!=this.last){
-			p = p.next;
-			count++;
-		}
-
-		return count;
+		return this.num_trees;
 	}
 
 	/**
@@ -293,7 +294,7 @@ public class BinomialHeap
 		public HeapNode(HeapItem item){
 			this.item = item;
 			this.child = null;
-			this.next = null;
+			this.next = this; // List is circular thus if no other node needs to point to self
 			this.parent = null;
 			this.rank = 0;
 		}
@@ -336,34 +337,7 @@ public class BinomialHeap
 		public int getRank(){
 			return this.rank;
 		}
-		/*
-                public boolean equals(HeapNode node){
-                    String this_child="", this_next="", this_parent="";
-                    String node_child="", node_next="", node_parent="";
 
-                    if (this.child == null){
-                        this_child = "null";
-                    }
-                    if (this.next == null){
-                        this_next = "null";
-                    }
-                    if (this.parent== null){
-                        this_parent = "null";
-                    }
-
-                    if (node.child == null){
-                        node_child = "null";
-                    }
-                    if (node.next == null){
-                        node_next = "null";
-                    }
-                    if (node.parent== null){
-                        node_parent = "null";
-                    }
-
-                    return this.item.equals(node.item) && this_child.equals(node_child) && this_next.equals(node_next) && this_parent.equals(node_parent) && this.rank == node.rank;
-                }
-        */
 		public boolean equals(HeapNode node){
 			return this.toString().equals(node.toString());
 		}

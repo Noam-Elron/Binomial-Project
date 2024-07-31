@@ -14,6 +14,7 @@ public class Test {
         //heap.insert(1, "geut");
         //heap.insert(2, "geut");
         //heap.insert(9, "geut");
+        System.out.println("num trees: " + heap.num_trees);
         print_r(heap);
         System.out.println("heap.last.next: " + heap.last.next);
         System.out.println("heap.last: " + heap.last);
