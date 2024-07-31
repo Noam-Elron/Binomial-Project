@@ -10,12 +10,12 @@ public class Test {
         //heap.insert(8, "geut");
         System.out.println("heap last: " + heap.last);
         System.out.println("heap last next: " + heap.last.next);
-        //heap.insert(5, "geut");
-        //heap.insert(1, "geut");
+        heap.insert(5, "geut");
+        heap.insert(1, "geut");
         //heap.insert(2, "geut");
         //heap.insert(9, "geut");
         System.out.println("num trees: " + heap.num_trees);
-        print_r(heap);
+        //print_r(heap);
         System.out.println("heap.last.next: " + heap.last.next);
         System.out.println("heap.last: " + heap.last);
         System.out.println("heap.last.child: " + heap.last.child);

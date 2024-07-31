@@ -50,6 +50,7 @@ public class BinomialHeap
 			this.last = b_0_heapnode;
 			this.size++;
 			this.num_trees++;
+			return b_0_heapitem;
 		}
 
 		BinomialHeap B0 = new BinomialHeap(b_0_heapnode);
@@ -113,14 +114,13 @@ public class BinomialHeap
 	 */
 	public void meld(BinomialHeap heap2)
 	{
-		System.out.println("melding");
+
 		HeapNode p1 = this.last;
 		p1 = p1.next;
 		HeapNode p2 = heap2.last;
 		p2 = p2.next;
 		HeapNode previous = p1;
 
-		System.out.println("p1: " + p1 + " p2: " + p2);
 		while(p1 != this.last && p2 != heap2.last){
 			if (p1.rank == p2.rank) { // link two nodes of the same rank
 				HeapNode temp = p2.next; // p2.next is overriden while linking so need to save next Binomial tree
@@ -143,33 +143,16 @@ public class BinomialHeap
 
 		if (p1 == this.last && p2 == heap2.last){
 			if(p1.rank == p2.rank){ // link nodes
-				System.out.println("1");
 				p1 = this.link(p1, p2);
-				System.out.println("p1 after link: "+p1);
-				if(p1.next.rank != -1) {
-					System.out.println("temp is nullish");
-					p1.next = p1;
-				}
-				else{
-					p1.next = p1;
-				}
-				p1 = p1.next; // we would like it to be the new "last"
 			}
 			else{ // add node
-				System.out.println("2");
-				HeapNode temp = heap2.last;
-				if (this.last.rank!=-1) {
-					System.out.println("3");
-					temp = p1.next; // saving pointer to what's going to be the next node in the end of the day
+				if (p1.rank <= p2.rank) {
+					HeapNode temp = p1.next; // first element of this heap
+					p1.next = p2; // adding the current node in heap2 to this.heap - unfortunately with a "tail" of other nodes
+					p2.next = temp; // no more tail of unwanted nodes!
+					p1 = p1.next;
 				}
-				else{
-					System.out.println("4");
-					temp.rank = 0;
-				}
-				p1.next = p2; // adding the current node in heap2 to this.heap - unfortunately with a "tail" of other nodes
-				p1 = p1.next;
-				p1.next = temp; // no more tail of unwanted nodes!
-				p1 = p1.next; // we would like it to be the new "last"
+
 			}
 		}
 		else {
