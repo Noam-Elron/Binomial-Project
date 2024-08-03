@@ -7,20 +7,33 @@ public class Test {
     public static void main(String[] args) {
         BinomialHeap heap = new BinomialHeap();
         heap.insert(12, "geut");
-        //heap.insert(8, "geut");
-        System.out.println("heap last: " + heap.last);
-        System.out.println("heap last next: " + heap.last.next);
+        heap.insert(8, "geut");
+        System.out.println(heap);
         heap.insert(5, "geut");
+        System.out.println(heap);
         heap.insert(1, "geut");
-        //heap.insert(2, "geut");
-        //heap.insert(9, "geut");
-        System.out.println("num trees: " + heap.num_trees);
-        //print_r(heap);
-        System.out.println("heap.last.next: " + heap.last.next);
-        System.out.println("heap.last: " + heap.last);
-        System.out.println("heap.last.child: " + heap.last.child);
-        System.out.println("heap.last.child.child: " + heap.last.child.child);
-        System.out.println("heap.last.child.next: " + heap.last.child.next);
+        System.out.println(heap);
+        heap.insert(2, "geut");
+        System.out.println(heap);
+        heap.insert(9, "geut");
+        System.out.println(heap);
+        heap.insert(7, "geut");
+        System.out.println(heap);
+        heap.insert(4, "geut");
+        System.out.println("\n\n\n");
+        System.out.println(heap.min);
+        System.out.println(heap.min.child);
+        System.out.println(heap.min.child.next);
+        System.out.println(heap.min.child.child);
+        System.out.println(heap.min.child.child.child);
+        System.out.println("\n\n\n");
+        //System.out.println("last: "+heap.last);
+        //System.out.println("min: "+heap.min);
+        //System.out.println("num trees: " + heap.num_trees);
+        System.out.println(heap);
+        System.out.println("\n\n");
+        System.out.println("min: " + heap.min);
+        System.out.println("last: " + heap.last);
     }
 
     public static void print_r(BinomialHeap hi) {
