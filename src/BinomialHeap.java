@@ -313,7 +313,7 @@ public class BinomialHeap
 	 *
 	 */
 	public static HeapNode link(HeapNode x, HeapNode y) {
-		if (x.item.key >= y.item.key) { // Unsure if >= or > because maybe duplicate keys?
+		if (x.item.key > y.item.key) { // Unsure if >= or > because maybe duplicate keys?
 			HeapNode temp = x;
 			x = y;
 			y = temp;

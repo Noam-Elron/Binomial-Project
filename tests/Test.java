@@ -1,11 +1,7 @@
-import java.util.HashSet;
-import java.util.Set;
-
-
 public class Test {
 
     public static void main(String[] args) {
-        test2();
+        test();
     }
 
     public static void test2() {
@@ -61,6 +57,7 @@ public class Test {
         System.out.println(heap2);
 
         heap.meld(heap2);
+        HeapGraph.draw(heap2);
         System.out.println(heap);
         System.out.println("\n\n\n");
         System.out.println(heap.min);
@@ -93,12 +90,12 @@ public class Test {
         heap2.insert(6, "");
         heap2.insert(7, "");
 
-        System.out.println(heap1);
-        System.out.println(heap2);
+        //HeapGraph.draw(heap1);
+        //HeapGraph.draw(heap2);
 
         heap1.meld(heap2);
 
-        System.out.println(heap1);
+        HeapGraph.draw(heap1);
     }
 }
 

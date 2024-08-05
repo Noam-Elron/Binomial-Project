@@ -65,7 +65,7 @@ public class InputLinkedList extends BinomialList {
             cur = first;
 
             while (cur != node) {
-                System.out.println(cur);
+                //System.out.println(cur);
                 next();
             }
             prev.next = cur.next;
