@@ -3,6 +3,7 @@ public class Melder {
     ResultLinkedList result = new ResultLinkedList();
     InputLinkedList first_heap;
     InputLinkedList second_heap;
+    int trees_merged = 0;
 
     public Melder(BinomialHeap heap1, BinomialHeap heap2) {
         first_heap = new InputLinkedList(heap1);
@@ -19,15 +20,20 @@ public class Melder {
     public void meld_till_exhausted() {
         while(!first_heap.finished_iterating() && !second_heap.finished_iterating()) {
             BinomialHeap.HeapNode[] same_ranks = next_rank_array();
-            int length = 0;
-            while(length < 3 && same_ranks[length] != null) {
-                length++;
+            int num_of_same_rank = 0;
+            while(num_of_same_rank < 3 && same_ranks[num_of_same_rank] != null) {
+                num_of_same_rank++;
             }
 
-            switch (length) {
+            switch (num_of_same_rank) {
                 case 3:
-                    swap_carry_with_minimum_key(); // Unsure if works
+                    carry = same_ranks[0];
+                    swap_carry_with_minimum_key();
                     result.add(carry);
+                    first_heap.next();
+                    second_heap.next();
+                    carry = BinomialHeap.link(first_heap.get_previous(), second_heap.get_previous());
+                    trees_merged++;
                     break;
 
 
@@ -51,6 +57,8 @@ public class Melder {
                         //System.out.println("Second heap cur: " + second_heap.cur());
                         carry = BinomialHeap.link(first_heap.get_previous(), second_heap.get_previous());
                     }
+
+                    trees_merged++;
 
                     break;
 
@@ -95,6 +103,7 @@ public class Melder {
                 //System.out.println("remaining: " + remaining);
                 unexhausted.next();
                 carry = BinomialHeap.link(carry, unexhausted.get_previous());
+                trees_merged++;
                 if (unexhausted.prev == unexhausted.last) {
                     //System.out.println("updating last node to: " + carry);
                     unexhausted.last = carry;
