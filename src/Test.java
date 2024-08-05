@@ -5,12 +5,31 @@ import java.util.Set;
 public class Test {
 
     public static void main(String[] args) {
+        test2();
+    }
+
+    public static void test2() {
+        BinomialHeap heap = new BinomialHeap();
+
+        for (int i = 0; i < 40; i++) {
+            heap.insert(i, "test");
+        }
+
+
+        System.out.println(heap);
+    }
+
+    public static void test() {
         BinomialHeap heap = new BinomialHeap();
         heap.insert(12, "geut");
         heap.insert(8, "geut");
+        System.out.println(heap.first);
+        System.out.println(heap.last);
         System.out.println(heap);
         heap.insert(5, "geut");
         System.out.println(heap);
+        System.out.println(heap.first);
+        System.out.println(heap.last);
         heap.insert(1, "geut");
         System.out.println(heap);
         heap.insert(2, "geut");

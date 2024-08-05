@@ -222,172 +222,50 @@ public class BinomialHeap
 		return false;
 	}
 
-	public void meld(BinomialHeap heap2)
-	{
+
+	public void meld(BinomialHeap heap2) {
 		if (empty_heaps(heap2)) {
 			return;
 		}
 
+		Melder meld_operator = new Melder(this, heap2);
 
 		this.num_trees = this.num_trees + heap2.num_trees;
 		this.size = this.size + heap2.size;
 		this.min = return_true_min(heap2);
+		//System.out.println("Before melding till exhausted");
+		meld_operator.meld_till_exhausted();
+		//System.out.println("After melding till exhausted");
+		//System.out.println("Res first: " + meld_operator.getResult().first);
+		//System.out.println("Res last: " + meld_operator.getResult().last);
+		//System.out.println("Carry: " + meld_operator.getCarry());
+		//System.out.println("Heap 1 finished iterating: " + meld_operator.get_first_heap().finished_iterating());
+		//System.out.println("Heap 2 finished iterating: " + meld_operator.get_second_heap().finished_iterating());
+		if(meld_operator.get_first_heap().finished_iterating() && meld_operator.get_second_heap().finished_iterating()) { // carry exist in this case
+			//System.out.println("Finished iterating both lists only carry remains");
+			//System.out.println("Res first: " + meld_operator.getResult().first);
+			//System.out.println("Res last: " + meld_operator.getResult().last);
 
-		HeapNode h1_cur_node = this.first;
-		HeapNode h2_cur_node = heap2.first;
+			meld_operator.result.add(meld_operator.getCarry());
+			meld_operator.result.last = meld_operator.result.cur();
+			meld_operator.result.remove_sentinel();
 
-		this.last.next = null; // disconnect lists for easier navigation
-		heap2.last.next = null;
-
-		HeapNode carry = new HeapNode();
-
-
-		HeapNode[] result = new HeapNode[this.num_trees];
-		int cur = 0;
-
-
-
-		while(h1_cur_node != null && h2_cur_node != null) {
-			System.out.println();
-			System.out.println("h1: " + h1_cur_node);
-			System.out.println("h2: " + h2_cur_node);
-
-			HeapNode h1_next = h1_cur_node.next;
-			HeapNode h2_next = h2_cur_node.next;
-
-			if (h1_cur_node.rank == h2_cur_node.rank) {
-				System.out.println("h1 and h2 cur node ranks are the same, linking them together");
-
-				if (carry.rank != -1) {
-					int min_key = Math.min(Math.min(h1_cur_node.item.key, h2_cur_node.item.key), carry.item.key);
-					if (carry.item.key != min_key) {
-						if (h1_cur_node.item.key == min_key) {
-							HeapNode temp = carry;
-							carry = h1_cur_node;
-							h1_cur_node = temp;
-							h1_cur_node.next = h1_next;
-						}
-						else {
-							HeapNode temp = carry;
-							carry = h2_cur_node;
-							h2_cur_node = temp;
-							h2_cur_node.next = h2_next;
-						}
-					}
-					System.out.println("carry already exists so adding to result");
-					result[cur] = carry;
-					cur++;
-				}
-
-				carry = link(h1_cur_node, h2_cur_node);
-				this.num_trees--;
-				h1_cur_node = h1_next;
-				h2_cur_node = h2_next;
-
-			}
-
-			else if (h1_cur_node.rank == carry.rank) { // Means h1.rank != h2.rank, thus h2.rank must be bigger because carry.rank <= h1.rank, h2.rank
-				System.out.println("Linking carry and h1_cur_node");
-				carry = link(h1_cur_node, carry);
-				h1_cur_node = h1_next;
-			}
-			else if (h2_cur_node.rank == carry.rank) { // Means h1.rank != h2.rank, thus h1.rank must be bigger because carry.rank <= h1.rank, h2.rank
-				System.out.println("Linking carry and h2_cur_node");
-				carry = link(h2_cur_node, carry);
-				h2_cur_node = h2_next;
-			}
-
-			else if (carry.rank != -1 && (carry.rank < h1_cur_node.rank || carry.rank < h2_cur_node.rank)) {
-				System.out.println("Carry smaller than both nodes so putting in result");
-				result[cur] = carry;
-				cur++;
-				carry = new HeapNode();
-			}
-
-			else if (h1_cur_node.rank < h2_cur_node.rank) {
-				System.out.println("h1 rank smaller than h2 rank so adding h1 to result");
-				result[cur] = h1_cur_node;
-				cur++;
-				h1_cur_node = h1_next;
-			}
-
-			else if (h2_cur_node.rank < h1_cur_node.rank) {
-				System.out.println("h2 rank smaller than h1 rank so adding h2 to result");
-				result[cur] = h2_cur_node;
-				cur++;
-				h2_cur_node = h2_next;
-			}
-
-		}
-
-
-		System.out.println("\nFinished iterating over one of the heaps\n");
-
-		if(h1_cur_node == null && h2_cur_node == null) { // carry exist in this case
-			result[cur] = carry;
-			this.first = result[0];
-			this.last = carry;
+			this.first = meld_operator.getResult().first;
+			this.last = meld_operator.result.last;
 			this.last.next = this.first;
 			return;
 		}
+		//System.out.println("A list is unexhausted");
+		ResultLinkedList result = meld_operator.meld_unexhausted_with_carry();
+		//System.out.println("Completely finished");
 
-		HeapNode final_node = h1_cur_node == null ? heap2.last : this.last;
-		HeapNode remaining = h1_cur_node == null ? h2_cur_node : h1_cur_node;
-		System.out.println("carry: " + carry);
-		System.out.println("remaining: " + remaining);
-		while (carry.rank != -1 && remaining != null) {
-
-			HeapNode next = remaining.next;
-			if (carry.rank < remaining.rank) {
-				carry.next = remaining;
-				result[cur] = carry;
-				cur++;
-				break;
-			} else {
-				System.out.println("Linking carry and remainder: ");
-				System.out.println("carry: " + carry);
-				System.out.println("remaining: " + remaining);
-
-				HeapNode temp = carry;
-				carry = link(carry, remaining);
-				if (remaining == final_node) {
-					System.out.println("updating last node to: " + carry);
-					final_node = carry;
-				}
-				if (temp == first) {
-					System.out.println("updating last node to: " + carry);
-					first = carry;
-				}
-				remaining = next;
-			}
-		}
-
-		if (remaining == null && carry.rank != -1) {
-			remaining = carry;
-		}
-		System.out.println("Cur: " + cur);
-		System.out.println("carry: " + carry);
-		System.out.println("remaining: " + remaining);
-		while (remaining != null) {
-			result[cur] = remaining;
-			cur++;
-			remaining = remaining.next;
-		}
-
-		for (int i = 0; i < cur; i++) {
-			result[i].next = result[(i + 1) % cur];
-		}
+		this.first = result.first;
+		this.last = result.last;
 
 
-		//System.out.println("Cur: " + cur);
-		this.first = result[0];
-		this.last = result[cur-1];
-		this.last.next = this.first;
-		//System.out.println("this min:" + this.min);
-		//System.out.println("this last:" + this.last);
-		//System.out.println("\n\n");
+
+
 	}
-
 
 
 	/**
@@ -458,20 +336,19 @@ public class BinomialHeap
 	 * Static meld between two trees of same size
 	 *
 	 */
-	public HeapNode link(HeapNode x, HeapNode y) {
-		// change the line we discussed and make it work on this node and other node (receive 1 parameter insead of two)
+	public static HeapNode link(HeapNode x, HeapNode y) {
 		if (x.item.key > y.item.key) {
 			HeapNode temp = x;
 			x = y;
 			y = temp;
 		}
 
-		// I'm adding a line that changes the rank
+
 		x.rank = x.rank + 1 ;
 		y.next = y;
 		if (x.child != null) {
 			HeapNode smallest = x.child.next; // smallest degree in list
-			System.out.println("\nUpdating: " + y + " to point to: " + smallest + "\n");
+			//System.out.println("\nUpdating: " + y + " to point to: " + smallest + "\n");
 			x.child.next = y; // x's biggest child points to y as y has biggest degree
 			y.next = smallest;
 		}
