@@ -104,8 +104,8 @@ public class BinomialHeapTest {
                 }
                 this.eTrace += "\t" + el + "\n";
             }
-//            System.out.println("Exception message: " + eMessage);
-//            System.out.println("Stack trace:\n" + eTrace);
+            //System.out.println("Exception message: " + eMessage);
+            //System.out.println("Stack trace:\n" + eTrace);
         }
 
         public boolean failed() {
@@ -142,7 +142,7 @@ public class BinomialHeapTest {
         protected void test() {
             BinomialHeap heap1 = new BinomialHeap();
             BinomialHeap heap2 = new BinomialHeap();
-            heap1.insert(3, "geut");
+            heap1.insert(3, "");
             int size1 = heap1.size();
             heap1.meld(heap2);
             if (heap1.empty()) {
@@ -166,7 +166,7 @@ public class BinomialHeapTest {
         protected void test() {
             BinomialHeap heap1 = new BinomialHeap();
             BinomialHeap heap2 = new BinomialHeap();
-            heap2.insert(3, "geut");
+            heap2.insert(3, "");
             int size1 = heap1.size();
             heap1.meld(heap2);
             if (heap1.empty()) {
@@ -191,10 +191,10 @@ public class BinomialHeapTest {
         protected void test() {
             BinomialHeap heap1 = new BinomialHeap();
             BinomialHeap heap2 = new BinomialHeap();
-            heap1.insert(5, "geut");
-            heap1.insert(17, "geut");
+            heap1.insert(5, "");
+            heap1.insert(17, "");
             int size1 = heap1.size();
-            heap2.insert(3, "geut");
+            heap2.insert(3, "");
             int size2 = heap2.size();
 
             heap1.meld(heap2);
@@ -223,12 +223,12 @@ public class BinomialHeapTest {
             int[] vals2 = createValues(500);
             int min = vals1[0];
             for (int v : vals1) {
-                heap1.insert(v, "geut");
+                heap1.insert(v, "");
                 min = v < min ? v : min;
             }
             //System.out.println(heap1);
             for (int v : vals2) {
-                heap2.insert(v, "geut");
+                heap2.insert(v, "");
                 min = v < min ? v : min;
             }
             int size1 = heap1.size();
@@ -263,7 +263,7 @@ public class BinomialHeapTest {
                             heap1.size());
                     break;
                 }
-                heap1.insert(vals[i], "geut");
+                heap1.insert(vals[i], "");
             }
         }
     }
@@ -281,7 +281,7 @@ public class BinomialHeapTest {
 
             for (int i = 0; i < vals.length; ++i) {
                 min = vals[i] < min ? vals[i] : min;
-                heap1.insert(vals[i], "geut");
+                heap1.insert(vals[i], "");
                 if (heap1.findMin().key != min) {
                     setFailed("min is "+min+
                             "but findMin() says "+
@@ -302,7 +302,7 @@ public class BinomialHeapTest {
             Arrays.sort(vals);
             BinomialHeap heap1 = new BinomialHeap();
             for (int i = vals.length - 1; i >= 0 ; --i) {
-                heap1.insert(vals[i], "geut");
+                heap1.insert(vals[i], "");
                 if (heap1.findMin().key != vals[i]) {
                     setFailed("min is "+vals[i]+
                             "but findMin() says "+
@@ -324,16 +324,22 @@ public class BinomialHeapTest {
             BinomialHeap heap1 = new BinomialHeap();
 
             for (int v : vals) {
-                heap1.insert(v, "geut");
+                heap1.insert(v, "");
             }
             Arrays.sort(vals);
             for (int v : vals) {
+                //System.out.println("Expected new min: " + v);
+                //System.out.println("Actual new min in my heap: " + heap1.min);
                 if (heap1.findMin().key != v) {
                     setFailed("min is "+v+" but findMin() says "+
                             heap1.findMin());
                     break;
                 }
+                //System.out.println(heap1);
+                //System.out.println(heap1.min);
+                //System.out.println(heap1.min.child);
                 heap1.deleteMin();
+
             }
         }
     }
@@ -360,7 +366,7 @@ public class BinomialHeapTest {
                     break;
                 }
                 for (int j = 0; j < i; ++j) {
-                    heap1.insert(i, "geut");
+                    heap1.insert(i, "" + size);
                     ++size;
                     if (heap1.empty()) {
                         setFailed(
@@ -380,6 +386,7 @@ public class BinomialHeapTest {
                                 "not empty but empty() returns true");
                         break;
                     }
+                    HeapGraph.draw(heap1);
                     heap1.deleteMin();
                     --size;
                     if (heap1.size() != size) {
