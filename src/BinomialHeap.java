@@ -214,6 +214,7 @@ public class BinomialHeap
 			this.min = other_heap.min;
 			this.last = other_heap.last;
 			this.num_trees = other_heap.num_trees;
+			this.size = other_heap.size();
 			return true;
 		}
 		if (other_heap.size == 0) {
@@ -236,15 +237,11 @@ public class BinomialHeap
 		//System.out.println("Before melding till exhausted");
 		meld_operator.meld_till_exhausted();
 		//System.out.println("After melding till exhausted");
-		//System.out.println("Res first: " + meld_operator.getResult().first);
-		//System.out.println("Res last: " + meld_operator.getResult().last);
 		//System.out.println("Carry: " + meld_operator.getCarry());
 		//System.out.println("Heap 1 finished iterating: " + meld_operator.get_first_heap().finished_iterating());
 		//System.out.println("Heap 2 finished iterating: " + meld_operator.get_second_heap().finished_iterating());
 		if(meld_operator.get_first_heap().finished_iterating() && meld_operator.get_second_heap().finished_iterating()) { // carry exist in this case
 			//System.out.println("Finished iterating both lists only carry remains");
-			//System.out.println("Res first: " + meld_operator.getResult().first);
-			//System.out.println("Res last: " + meld_operator.getResult().last);
 
 			meld_operator.result.add(meld_operator.getCarry());
 			meld_operator.result.last = meld_operator.result.cur();
