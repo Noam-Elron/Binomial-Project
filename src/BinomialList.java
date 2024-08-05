@@ -4,6 +4,7 @@ public class BinomialList {
     protected BinomialHeap.HeapNode prev;
     protected BinomialHeap.HeapNode cur;
 
+
     public BinomialList() { // Perhaps one single reason why interface would be better as this is unneeded for InputLinkedList
     }
 
@@ -57,5 +58,8 @@ public class BinomialList {
     public void disconnect_tail_from_head() {
         this.last.next = null;
     }
+
+
+
 
 }
