@@ -5,6 +5,9 @@ public class Main {
 
         for (int i = 10; i < 13; ++i) {
             for (int j = 0; j < i; ++j) {
+                System.out.println("HEAP SIZE IS: " + heap1.size());
+                System.out.println("MINIMUM IS: " + heap1.min);
+                System.out.println(heap1);
                 heap1.insert(i, "" + size);
                 ++size;
 

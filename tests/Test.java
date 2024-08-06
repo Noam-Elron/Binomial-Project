@@ -1,7 +1,7 @@
 public class Test {
 
     public static void main(String[] args) {
-        test();
+        test2();
     }
 
     public static void test2() {
@@ -57,7 +57,7 @@ public class Test {
         System.out.println(heap2);
 
         heap.meld(heap2);
-        HeapGraph.draw(heap2);
+
         System.out.println(heap);
         System.out.println("\n\n\n");
         System.out.println(heap.min);
@@ -75,6 +75,7 @@ public class Test {
         System.out.println("min: " + heap.min);
         System.out.println("first: " + heap.first);
         System.out.println("last: " + heap.last);
+        HeapGraph.draw(heap2);
     }
 
 

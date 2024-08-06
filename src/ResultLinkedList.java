@@ -9,14 +9,6 @@ public class ResultLinkedList extends BinomialList {
 
     }
 
-    public ResultLinkedList(BinomialHeap.HeapNode node) {
-        node.next = null;
-        this.first = node;
-        this.prev = node;
-        this.cur = node;
-        this.last = null;
-    }
-
     /**
      *
      * @param new_cur new cur node<br><br>

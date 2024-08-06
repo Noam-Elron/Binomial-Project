@@ -92,20 +92,7 @@ public class BinomialHeap
 		HeapItem b_0_heapitem = new HeapItem(key, info);
 		HeapNode b_0_heapnode = new HeapNode(b_0_heapitem);
 		b_0_heapitem.set_node(b_0_heapnode);
-
-
-		if (this.empty()) {
-			this.first = b_0_heapnode;
-			this.min = b_0_heapnode;
-			this.last = b_0_heapnode;
-			this.size++;
-			this.num_trees++;
-			return b_0_heapitem;
-		}
-
 		BinomialHeap B0 = new BinomialHeap(b_0_heapnode);
-
-
 		this.meld(B0);
 
 		return b_0_heapitem;
@@ -313,7 +300,7 @@ public class BinomialHeap
 	 *
 	 */
 	public static HeapNode link(HeapNode x, HeapNode y) {
-		if (x.item.key > y.item.key) { // Unsure if >= or > because maybe duplicate keys?
+		if (x.item.key >= y.item.key) { // Unsure if >= or > because maybe duplicate keys?
 			HeapNode temp = x;
 			x = y;
 			y = temp;

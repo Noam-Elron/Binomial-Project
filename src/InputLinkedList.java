@@ -22,7 +22,7 @@ public class InputLinkedList extends BinomialList {
         cur = first; // Reset cur just in case.
         min = cur;
         while (!finished_iterating()) {
-            if(cur.item.key < lowest_value_found) {
+            if(cur.item.key <= lowest_value_found) {
                 min = cur;
                 lowest_value_found = cur.item.key;
             }
