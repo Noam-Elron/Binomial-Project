@@ -11,15 +11,16 @@ public class Test {
             heap.insert(i, "test");
         }
 
-        HeapGraph.draw(heap);
+        //HeapGraph.draw(heap);
         System.out.println(heap);
         System.out.println(heap.size());
         System.out.println(heap.numTrees());
-
-        heap.deleteMin();
-        System.out.println(heap);
-        System.out.println(heap.size());
-        System.out.println(heap.numTrees());
+        for (int i = 1; i <= 7; i++) {
+            heap.deleteMin();
+            System.out.println(heap);
+            System.out.println(heap.size());
+            System.out.println(heap.numTrees());
+        }
 
     }
 
