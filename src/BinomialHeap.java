@@ -120,20 +120,23 @@ public class BinomialHeap
 
 		HeapNode old_min = this.min;
 		InputLinkedList heap_wrapper = new InputLinkedList(this);
-		this.size -= old_min.size;
-		this.num_trees -= 1;
+		this.size -= old_min.get_size();
+		this.num_trees--;
 		heap_wrapper.remove_from_list(min);
 
 		this.min = heap_wrapper.find_minimum();
 		this.first = heap_wrapper.first;
 		this.last = heap_wrapper.last;
 		//System.out.println("New minimum: " + min);
-
-		if (old_min.rank > 0) { // if has children
+		//System.out.println("Printing heap after removing min");
+		//System.out.println(this);
+		if (old_min.rank > 0) { // if it has children
 			InputLinkedList orphaned_children = new InputLinkedList(old_min.child.next, old_min.child); // Min child is max degree child so needs to be last, last points to first so min.child.next is first
 			HeapNode orphaned_min = orphaned_children.find_minimum();
 			int num_children = orphaned_children.orphan_children();
-			BinomialHeap children = new BinomialHeap(old_min.size - 1, num_children, orphaned_children.first, orphaned_children.last, orphaned_min);
+			BinomialHeap children = new BinomialHeap(old_min.get_size() - 1, num_children, orphaned_children.first, orphaned_children.last, orphaned_min);
+			//System.out.println("Printing children heap");
+			//System.out.println(children);
 			meld(children);
 		}
 	}
@@ -211,11 +214,9 @@ public class BinomialHeap
 			return;
 		}
 
-		Melder meld_operator = new Melder(this, heap2);
-
 		this.size = this.size + heap2.size;
 		this.min = return_true_min(heap2);
-
+		Melder meld_operator = new Melder(this, heap2);
 
 
 		//System.out.println("Before melding till exhausted");
@@ -234,6 +235,7 @@ public class BinomialHeap
 			this.first = meld_operator.getResult().first;
 			this.last = meld_operator.result.last;
 			this.last.next = this.first;
+			this.num_trees = this.num_trees + heap2.num_trees - meld_operator.trees_merged;
 			return;
 		}
 		//System.out.println("A list is unexhausted");
@@ -248,7 +250,7 @@ public class BinomialHeap
 
 
 	protected HeapNode return_true_min(BinomialHeap other_heap) {
-		min = (this.min.item.key < other_heap.min.item.key) ?  this.min : other_heap.min;
+		min = (this.min.item.key <= other_heap.min.item.key) ?  this.min : other_heap.min;
 		return min;
 	}
 
@@ -291,36 +293,6 @@ public class BinomialHeap
 	 */
 
 
-	/**
-	 *
-	 * pre: x,y are Binomial tree header nodes
-	 * pre: Trees with x,y as header are same degree( B_k and B_k )
-	 *
-	 * Static meld between two trees of same size
-	 *
-	 */
-	public static HeapNode link(HeapNode x, HeapNode y) {
-		if (x.item.key >= y.item.key) { // Unsure if >= or > because maybe duplicate keys?
-			HeapNode temp = x;
-			x = y;
-			y = temp;
-		}
-
-
-		x.rank = x.rank + 1 ;
-		x.size = x.size + y.size;
-		y.next = y;
-		if (x.child != null) {
-			HeapNode smallest = x.child.next; // smallest degree in list
-			x.child.next = y; // x's biggest child points to y as y has biggest degree
-			y.next = smallest;
-		}
-		y.parent = x; // y's new parent(previously was null) is now x
-
-		x.child = y; // y is x's new smallest degree child
-		return x;
-	}
-
 
 	public static class HeapNode{
 		public HeapItem item;
@@ -328,7 +300,6 @@ public class BinomialHeap
 		public HeapNode next;
 		public HeapNode parent;
 		public int rank;
-		public int size;
 
 		// Empty/Virtual HeapNode
 		public HeapNode(){
@@ -336,7 +307,6 @@ public class BinomialHeap
 			this.child = null;
 			this.next = null;
 			this.parent = null;
-			this.size = 0;
 			this.rank = -1;
 		}
 
@@ -346,7 +316,6 @@ public class BinomialHeap
 			this.child = null;
 			this.next = this;
 			this.parent = null;
-			this.size = 1;
 			this.rank = 0;
 		}
 
@@ -355,8 +324,11 @@ public class BinomialHeap
 			this.child = child;
 			this.next = next;
 			this.parent = parent;
-			this.size = 1 + child.size;
 			this.rank = 0;
+		}
+
+		public int get_size() {
+			return (int)Math.pow(2, this.rank);
 		}
 
 		public String toString(){

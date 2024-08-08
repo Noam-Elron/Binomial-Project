@@ -27,12 +27,11 @@ public class Melder {
 
             switch (num_of_same_rank) {
                 case 3:
-                    carry = same_ranks[0];
                     swap_carry_with_minimum_key();
                     result.add(carry);
                     first_heap.next();
                     second_heap.next();
-                    carry = BinomialHeap.link(first_heap.get_previous(), second_heap.get_previous());
+                    carry = link(first_heap.get_previous(), second_heap.get_previous());
                     trees_merged++;
                     break;
 
@@ -40,12 +39,11 @@ public class Melder {
                 case 2:
                     if(same_ranks[0] == carry && same_ranks[1] == first_heap.cur()) { // Order of operations in same_ranks dictates result.first is carry second is diffrent node.
                         first_heap.next();
-                        carry = BinomialHeap.link(carry, first_heap.get_previous());
-
+                        carry = link(carry, first_heap.get_previous());
                     }
                     else if(same_ranks[0] == carry && same_ranks[1] == second_heap.cur()) { // Order of operations in same_ranks dictates result.first is carry second is diffrent node.
                         second_heap.next();
-                        carry = BinomialHeap.link(carry, second_heap.get_previous());
+                        carry = link(carry, second_heap.get_previous());
                     }
 
                     else {
@@ -55,7 +53,7 @@ public class Melder {
                         second_heap.next();
                         //System.out.println("First heap cur: " + first_heap.cur());
                         //System.out.println("Second heap cur: " + second_heap.cur());
-                        carry = BinomialHeap.link(first_heap.get_previous(), second_heap.get_previous());
+                        carry = link(first_heap.get_previous(), second_heap.get_previous());
                     }
 
                     trees_merged++;
@@ -102,7 +100,7 @@ public class Melder {
                 //System.out.println("carry: " + carry);
                 //System.out.println("remaining: " + remaining);
                 unexhausted.next();
-                carry = BinomialHeap.link(carry, unexhausted.get_previous());
+                carry = link(carry, unexhausted.get_previous());
                 trees_merged++;
                 if (unexhausted.prev == unexhausted.last) {
                     //System.out.println("updating last node to: " + carry);
@@ -135,7 +133,6 @@ public class Melder {
             min_heaps_rank = carry.rank;
             res[cur] = carry;
             cur++;
-            carry = new BinomialHeap.HeapNode();
         }
         if (first_heap.cur_rank() == min_heaps_rank) {
             res[cur] = first_heap.cur();
@@ -152,8 +149,6 @@ public class Melder {
 
 
     public void swap_with_carry(InputLinkedList list) {
-        list.prev.next = carry; // Probably unneeded/maybe harmful?
-
         BinomialHeap.HeapNode temp = list.cur();
         carry.next = temp.next;
         list.cur = carry;
@@ -173,7 +168,33 @@ public class Melder {
 
     }
 
+    /**
+     *
+     * pre: x,y are Binomial tree header nodes
+     * pre: Trees with x,y as header are same degree( B_k and B_k )
+     *
+     * Static meld between two trees of same size
+     *
+     */
+    public BinomialHeap.HeapNode link(BinomialHeap.HeapNode x, BinomialHeap.HeapNode y) {
+        if (x.item.key > y.item.key || (x.item.key == y.item.key && y == first_heap.get_min())) { // Unsure if >= or > because maybe duplicate keys?
+            BinomialHeap.HeapNode temp = x;
+            x = y;
+            y = temp;
+        }
 
+        x.rank = x.rank + 1 ;
+        y.next = y;
+        if (x.child != null) {
+            BinomialHeap.HeapNode smallest = x.child.next; // smallest degree in list
+            x.child.next = y; // x's biggest child points to y as y has biggest degree
+            y.next = smallest;
+        }
+        y.parent = x; // y's new parent(previously was null) is now x
+
+        x.child = y; // y is x's new smallest degree child
+        return x;
+    }
 
     public InputLinkedList get_first_heap() {
         return first_heap;

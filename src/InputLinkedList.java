@@ -1,7 +1,8 @@
 public class InputLinkedList extends BinomialList {
-    protected BinomialHeap.HeapNode min;
+    protected BinomialHeap.HeapNode min_node;
     public InputLinkedList(BinomialHeap heap) {
         super(heap);
+        min_node = heap.min;
     }
 
     public InputLinkedList(BinomialHeap.HeapNode first_node, BinomialHeap.HeapNode last_node) {
@@ -20,17 +21,17 @@ public class InputLinkedList extends BinomialList {
         disconnect_tail_from_head();
         int lowest_value_found = first.item.key;
         cur = first; // Reset cur just in case.
-        min = cur;
+        min_node = cur;
         while (!finished_iterating()) {
             if(cur.item.key <= lowest_value_found) {
-                min = cur;
+                min_node = cur;
                 lowest_value_found = cur.item.key;
             }
             next();
         }
         connect_tail_to_head();
         cur = first;
-        return min;
+        return min_node;
     }
 
     public int orphan_children() {
@@ -84,8 +85,12 @@ public class InputLinkedList extends BinomialList {
     private void empty_list() {
         this.first = null;
         this.last = null;
-        this.min = null;
+        this.min_node = null;
         this.prev = null;
         this.cur = null;
+    }
+
+    public BinomialHeap.HeapNode get_min() {
+        return this.min_node;
     }
 }

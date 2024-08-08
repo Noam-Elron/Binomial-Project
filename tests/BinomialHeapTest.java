@@ -218,8 +218,8 @@ public class BinomialHeapTest {
         protected void test() {
             BinomialHeap heap1 = new BinomialHeap();
             BinomialHeap heap2 = new BinomialHeap();
-            int[] vals1 = createValues(500);
-            int[] vals2 = createValues(500);
+            int[] vals1 = createValues(5000);
+            int[] vals2 = createValues(5000);
             int min = vals1[0];
             for (int v : vals1) {
                 heap1.insert(v, "");
@@ -253,7 +253,7 @@ public class BinomialHeapTest {
         }
 
         protected void test() {
-            int[] vals = createValues(100);
+            int[] vals = createValues(1000);
 
             BinomialHeap heap1 = new BinomialHeap();
             for (int i = 0; i < vals.length; ++i) {
@@ -274,7 +274,7 @@ public class BinomialHeapTest {
 
         protected void test() {
 
-            int[] vals = createValues(100);
+            int[] vals = createValues(1000);
             int min = vals[0];
             BinomialHeap heap1 = new BinomialHeap();
 
@@ -297,7 +297,7 @@ public class BinomialHeapTest {
         }
 
         protected void test() {
-            int[] vals = createValues(100);
+            int[] vals = createValues(1000);
             Arrays.sort(vals);
             BinomialHeap heap1 = new BinomialHeap();
             for (int i = vals.length - 1; i >= 0 ; --i) {
@@ -319,12 +319,13 @@ public class BinomialHeapTest {
 
         protected void test() {
 
-            int[] vals = createValues(100);
+            int[] vals = createValues(1000);
             BinomialHeap heap1 = new BinomialHeap();
-
+            //System.out.println(Arrays.toString(vals));
             for (int v : vals) {
                 heap1.insert(v, "");
             }
+            //System.out.println(heap1);
             Arrays.sort(vals);
             for (int v : vals) {
                 //System.out.println("Expected new min: " + v);
@@ -353,7 +354,7 @@ public class BinomialHeapTest {
             BinomialHeap heap1 = new BinomialHeap();
             int size = 0;
 
-            for (int i = 10; i < 30; ++i) {
+            for (int i = 10; i < 100; ++i) {
                 if (!heap1.empty()) {
                     setFailed("empty but empty() returns false");
                     break;
@@ -385,7 +386,7 @@ public class BinomialHeapTest {
                                 "not empty but empty() returns true");
                         break;
                     }
-                    HeapGraph.draw(heap1);
+                    //HeapGraph.draw(heap1);
                     heap1.deleteMin();
                     --size;
                     if (heap1.size() != size) {
