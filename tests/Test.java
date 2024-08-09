@@ -1,7 +1,7 @@
 public class Test {
 
     public static void main(String[] args) {
-        test();
+        test2();
     }
 
     public static void test2() {
@@ -11,10 +11,15 @@ public class Test {
             heap.insert(i, "test");
         }
 
-        HeapGraph.draw(heap);
+
         System.out.println(heap);
         System.out.println(heap.size());
         System.out.println(heap.numTrees());
+        heap.delete(heap.min.child.child.item);
+        System.out.println(heap);
+        System.out.println(heap.size());
+        System.out.println(heap.numTrees());
+
 //        for (int i = 1; i <= 7; i++) {
 //            heap.deleteMin();
 //            System.out.println(heap);
@@ -76,7 +81,6 @@ public class Test {
         System.out.println("min: " + heap.min);
         System.out.println("first: " + heap.first);
         System.out.println("last: " + heap.last);
-        HeapGraph.draw(heap2);
     }
 
 
@@ -97,7 +101,6 @@ public class Test {
 
         heap1.meld(heap2);
 
-        HeapGraph.draw(heap1);
     }
 }
 
